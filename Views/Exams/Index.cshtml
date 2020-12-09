@@ -2,33 +2,53 @@
     ViewData["Title"] = "Home Page";
 }
 
-
+<link href="~/css/site.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.21/dataRender/datetime.js"></script>
+
 
 <br />
 <br />
-<form id="basic-form">
-    <input type="text" id="txtExamId" style="display:none;" />
-    <input type="text" id="txtStudentId" style="display:none;" />
-    <input type="text" id="txtSubjectId" style="display:none;" />
-    <select id="student" style="height:30px">
-        @foreach (var item in ViewBag.Students)
-        {
-            <option value="@item.IndexNumber">@item.IndexNumber</option>
-        }
-    </select>
-    <select id="subject" style="height:30px">
-        @foreach (var item in ViewBag.Subjects)
-        {
-            <option value="@item.Title">@item.Title</option>
-        }
-    </select>
-    <input type="number" id="txtGrade" min="5" max="10" placeholder="Grade" style="margin-right:2px;" />
-    <input type="datetime-local" id="txtDate" placeholder="Date" style="margin-right:2px;" />
 
-    <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right:5px;" />
+<form class="form-inline" id="basic-form">
+
+    <div class="form-group row">
+        <input type="text" id="txtExamId" style="display:none;" />
+        <input type="text" id="txtStudentId" style="display:none;" />
+        <input type="text" id="txtSubjectId" style="display:none;" />
+        <div class="form-group mb-2">
+            <select id="student" style="height:30px" name="student">
+                @foreach (var item in ViewBag.Students)
+                {
+                    <option value="@item.IndexNumber">@item.IndexNumber</option>
+                }
+            </select>
+        </div>
+        <div class="form-group mx-sm-2 mb-2">
+            <select id="subject" style="height:30px" name="subject">
+                @foreach (var item in ViewBag.Subjects)
+                {
+                    <option value="@item.Title">@item.Title</option>
+                }
+            </select>
+        </div>
+        <div class="form-group mx-sm-2 mb-2">
+            <input type="number" id="txtGrade" name="grade" min="5" max="10" placeholder="Grade" style="margin-right:2px;" />
+        </div>
+
+        <div class="form-group mx-sm-2 mb-2">
+            <input type="datetime-local" name="date" id="txtDate" placeholder="Date" />
+        </div>
+
+        <div class="form-group mx-sm-2 mb-2">
+            <input id="btnSave" type="submit" value="Save Changes" class="btn btn-success" />
+        </div>
+
+    </div>
 </form>
 
 <br />
@@ -50,42 +70,54 @@
 </table>
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
+
 <script type="text/javascript">
 
     $(document).ready(function () {
+
         var table =
             $('#tblExams').DataTable({
                 ajax: {
                     url: '/Exams/GetExams',
                     dataSrc: ''
                 },
+               
                 columns: [
                     { data: 'ExamId' },
                     { data: 'Subject' },
                     { data: 'Student' },
                     { data: 'Grade' },
-                    { data: 'ExamDate' },
+                    { data: 'ExamDate', cellType: 'date' },
                     {
                         data: "id", render: function (data, typ, row, meta) {
                             return "<button class='btn btn-primary' style='margin-right: 2px;' onclick='Edit(" + JSON.stringify(row) + ")'>Edit</button>" +
                                 "<button class='btn btn-danger' style='margin-right: 2px;' onclick='Delete(" + JSON.stringify(row) + ")'>Delete</button>";
                         }
                     }
-                ]
+                ],
+                columnDefs: [{
+                    render: $.fn.dataTable.render.moment('YYYY-MM-DDTHH:mm:ss', 'MM/DD/YYYY HH:mm'),
+                    targets: 4
+                }]
             });
 
-        $("#basic-form").submit(function (event) {
-
-            event.preventDefault();
-
-
-        });
-
+        $.validator.addMethod("maxDate", function (value, element) {
+            var curDate = new Date();
+            var inputDate = new Date(value);
+            if (inputDate < curDate)
+                return true;
+            return false;
+        }, "Must be today date or less!");
     });
 
-    function Edit(oStudent) {
+    function Edit(oExam) {
 
-   
+        $("#txtExamId").val(oExam.ExamId);
+        $("#student").val(oExam.Student);
+        $("#subject").val(oExam.Subject);
+        $("#txtGrade").val(oExam.Grade);
+        $("#txtDate").val(oExam.ExamDate);
+
     }
 
 
@@ -100,16 +132,18 @@
                 });
         }
     }
+
     function Reset() {
-     
+
         $("#txtStudentId").val(0);
-        $("#txtStudentId").val(0);
+        $("#txtExamId").val(0);
         $("#txtSubjectId").val(0);
         $("#txtGrade").val("");
         $("#txtDate").val("");
         $("#student").val("");
         $("#subject").val("");
     }
+
     function ReloadGrid() {
         $('#tblExams').DataTable().clear();
         $('#tblExams').DataTable().ajax.reload();
@@ -122,7 +156,7 @@
     document.getElementById("btnSave").disabled = true;
 
     connection.on("ReceiveMessage", function () {
-    
+
         alert("New examiation added!");
         ReloadGrid();
         Reset();
@@ -145,17 +179,70 @@
         return console.error(err.toString());
     });
 
+
     document.getElementById("btnSave").addEventListener("click", function (event) {
 
-        var id = "0";
-        var grade = $("#txtGrade").val();
-        var examDate = $("#txtDate").val();
-        var subject = $("#subject option:selected").val();
-        var student = $("#student option:selected").val();
-        connection.invoke("SendMessage",  id,  grade, examDate,  student, subject).catch(function (err) {
-            return console.error(err.toString());
+
+        $("#basic-form").validate({
+            rules: {
+                grade: {
+                    required: true,
+                    number: true,
+                    min: 5,
+                    max: 10
+                },
+                date: {
+                    required: true,
+                    maxDate: true
+                }
+            }
         });
-        event.preventDefault();
+
+        if ($('#basic-form').valid()) {
+
+            var id = $.trim($("#txtExamId").val()) == "" ? "0" : $("#txtExamId").val();
+            var grade = $("#txtGrade").val();
+            var examDate = $("#txtDate").val();
+            var subject = $("#subject option:selected").val();
+            var student = $("#student option:selected").val();
+
+            if (id !== "0") {
+
+                var exam = {
+
+                    ExamId: id,
+                    Student: student,
+                    Subject: subject,
+                    Grade: grade,
+                    ExamDate: examDate
+                };
+
+                event.preventDefault();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Exams/Edit",
+                    data: JSON.stringify(exam),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        Reset();
+                        ReloadGrid();
+                        alert(data);
+                    }
+                });
+
+
+            } else {
+
+                connection.invoke("SendMessage", id, grade, examDate, student, subject).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                event.preventDefault();
+            }
+
+        }
+
     });
 
 </script>

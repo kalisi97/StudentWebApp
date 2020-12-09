@@ -2,11 +2,11 @@
     ViewData["Title"] = "Subjects Page";
 }
 
-
+<link href="~/css/site.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
 
 <div>
     <p>Click here to add new subject</p>
@@ -16,10 +16,16 @@
 <br />
 <br />
 
-<form id="basic-form">
-    <input type="text" id="txtSubjectId" placeholder="Subject Id" style="display:none;" />
-    <input type="text" id="txtTitle" placeholder="Subject Title" style="margin-right:5px;display:none;" />
-    <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right:5px;display:none;" />
+<form id="basic-form" class="form-inline">
+    <div class="form-group row">
+        <input type="text" id="txtSubjectId" placeholder="Subject Id" style="display:none;" />
+        <div class="form-group mb-2">
+            <input type="text" id="txtTitle" name="title" placeholder="Subject Title" style="margin-right:5px;display:none;" />
+        </div>
+        <div class="form-group mx-sm-2 mb-2">
+            <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right:5px;display:none;" />
+       </div>
+        </div>
 </form>
 
 <br />
@@ -59,24 +65,36 @@
 
         $("#basic-form").submit(function (event) {
             event.preventDefault();
-            var subject = {
-                SubjectId: $("#txtSubjectId").val(),
-                Title: $("#txtTitle").val()
-            };
-            $.ajax({
-                type: "POST",
-                url: "/Subjects/Edit",
-                data: JSON.stringify(subject),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    Reset();
-                    ReloadGrid();
-                    alert(data);
+
+            $("#basic-form").validate({
+                rules: {
+                    title: {
+                        required: true
+                    }
                 }
             });
-        });
 
+            if ($('#basic-form').valid()) {
+
+                var subject = {
+                    SubjectId: $("#txtSubjectId").val(),
+                    Title: $("#txtTitle").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Subjects/Edit",
+                    data: JSON.stringify(subject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        Reset();
+                        ReloadGrid();
+                        alert(data);
+                    }
+                });
+            }
+
+            });
     });
 
     function Edit(oSubject) {

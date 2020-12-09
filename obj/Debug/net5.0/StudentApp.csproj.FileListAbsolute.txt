@@ -148,16 +148,5 @@ C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentAp
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\ref\StudentApp.dll
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentApp.pdb
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentApp.genruntimeconfig.cache
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\BouncyCastle.Crypto.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\Google.Protobuf.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\K4os.Compression.LZ4.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\K4os.Compression.LZ4.Streams.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\K4os.Hash.xxHash.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\MySql.Data.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\Ubiety.Dns.Core.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\Zstandard.Net.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\Renci.SshNet.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\SshNet.Security.Cryptography.dll
-C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\bin\Debug\net5.0\System.Xml.XPath.XmlDocument.dll
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentApp.csprojAssemblyReference.cache
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\Razor\Views\Exams\Index.cshtml.g.cs

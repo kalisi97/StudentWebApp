@@ -33,7 +33,6 @@ namespace StudentApp
         {
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionSql")));
 
-           // services.AddDbContext<ApplicationContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnectionMySql")));
             services.AddScoped<Seeder>();
             services.AddControllersWithViews(
             ).AddJsonOptions(x =>

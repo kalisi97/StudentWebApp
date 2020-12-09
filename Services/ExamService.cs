@@ -139,7 +139,7 @@ namespace StudentApp.Services
            bool valid = true;
 
             /* Student and subject should not be null
-             * Exam date should not be nulll and should be date in the past
+             * Exam date should not be null and should be date in the past
              * Grade should not be null and should be between 5 and 10, including 5 and 10
              */
 

@@ -34,7 +34,8 @@ namespace StudentApp.Controllers
             List<ExamViewModel> returnExams = new List<ExamViewModel>();
             foreach(Exam e in exams)
             {
-                returnExams.Add(new ExamViewModel()
+               
+                returnExams.Add(new ExamViewModel
                 {
                     ExamId = e.ExamId,
                     StudentId = e.StudentId,
@@ -59,32 +60,16 @@ namespace StudentApp.Controllers
 
 
         [HttpPost]
-        public ActionResult SaveOrUpdate([FromForm] ExamViewModel exam)
+        public ActionResult Edit([FromBody] ExamViewModel exam)
         {
             try
-            {
-                if (exam.ExamId != 0)
-                {
+            {     
                     Exam examToUpdate = _examService.GetById(exam.ExamId);
                     examToUpdate.Grade = exam.Grade;
                     examToUpdate.ExamDate = exam.ExamDate;
                     _examService.Update(examToUpdate);
                     return Json("Updated!");
-                }
-                else
-                {
-                    Student student = _studentService.FindByIndexNumber(exam.Student);
-                    Subject subject = _subjectService.GetByTitle(exam.Subject);
-                    Exam newExam = new Exam()
-                    {
-                        Grade = exam.Grade,
-                        ExamDate = exam.ExamDate,
-                        Student = student,
-                        Subject = subject
-                    };
-                    _examService.Insert(newExam);
-                    return Json("Created!");
-                }
+                
             }
             catch(Exception e)
             {

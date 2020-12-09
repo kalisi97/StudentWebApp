@@ -2,10 +2,11 @@
     ViewData["Title"] = "Home Page";
 }
 
-
+<link href="~/css/site.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
 
 <div>
     <p>Click here to add new student</p>
@@ -14,13 +15,28 @@
 
 <br />
 <br />
-<form id="basic-form">
-    <input type="text" id="txtStudentId" placeholder="Student Id" style="display:none;" /><span></span>
-    <input type="text" id="txtFirstName" placeholder="Student Name" style="margin-right:2px;display:none; " />
-    <input type="text" id="txtLastName" placeholder="Student Last Name" style="margin-right:2px;display:none;" />
-    <input type="text" id="txtIndexNumber" placeholder="Student Index Number" style="margin-right:2px;display:none;" />
-    <input type="text" id="txtCity" placeholder="Student City" style="margin-right:2px; display:none;" />
-    <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right:5px;display:none;" />
+<form class="form-inline" id="basic-form">
+    <div class="form-group row">
+        <input type="text" id="txtStudentId" placeholder="Student Id" style="display:none;" />
+
+        <div class="form-group mb-2">
+            <input type="text" id="txtFirstName" placeholder="Student Name" style="margin-right: 2px; display: none; " />
+        </div>
+        <div class="form-group mx-sm-2 mb-2">
+            <input type="text" id="txtLastName" placeholder="Student Last Name" style="margin-right: 2px; display: none;" />
+        </div>
+    </div>
+
+    <div class="form-group mx-sm-2 mb-2">
+        <input type="text" id="txtIndexNumber" placeholder="Student Index Number" style="margin-left: 7px; display: none;" />
+    </div>
+    <div class="form-group mx-sm-2 mb-2">
+        <input type="text" id="txtCity" placeholder="Student City" style="margin-right: 2px; display: none;" />
+    </div>
+    <div class="form-group mx-sm-2 mb-2">
+        <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right: 2px; display: none;" />
+    </div>
+
 </form>
 
 <br />
