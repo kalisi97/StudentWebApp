@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+<br />
+<br />
+<form id="basic-form">
+    <input type="text" id="txtExamId" style="display:none;" />
+    <input type="text" id="txtStudentId" style="display:none;" />
+    <input type="text" id="txtSubjectId" style="display:none;" />
+    <select id="student" style="height:30px">
+        @foreach (var item in ViewBag.Students)
+        {
+            <option value="@item.IndexNumber">@item.IndexNumber</option>
+        }
+    </select>
+    <select id="subject" style="height:30px">
+        @foreach (var item in ViewBag.Subjects)
+        {
+            <option value="@item.Title">@item.Title</option>
+        }
+    </select>
+    <input type="number" id="txtGrade" min="5" max="10" placeholder="Grade" style="margin-right:2px;" />
+    <input type="datetime-local" id="txtDate" placeholder="Date" style="margin-right:2px;" />
+
+    <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right:5px;" />
+</form>
+
+<br />
+<br />
+
+<table id="tblExams" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Exam Id</th>
+            <th>Student</th>
+            <th>Subject</th>
+            <th>Grade</th>
+            <th>Exam Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table =
+            $('#tblExams').DataTable({
+                ajax: {
+                    url: '/Exams/GetExams',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'ExamId' },
+                    { data: 'Subject' },
+                    { data: 'Student' },
+                    { data: 'Grade' },
+                    { data: 'ExamDate' },
+                    {
+                        data: "id", render: function (data, typ, row, meta) {
+                            return "<button class='btn btn-primary' style='margin-right: 2px;' onclick='Edit(" + JSON.stringify(row) + ")'>Edit</button>" +
+                                "<button class='btn btn-danger' style='margin-right: 2px;' onclick='Delete(" + JSON.stringify(row) + ")'>Delete</button>";
+                        }
+                    }
+                ]
+            });
+
+        $("#basic-form").submit(function (event) {
+
+            event.preventDefault();
+
+
+        });
+
+    });
+
+    function Edit(oStudent) {
+
+   
+    }
+
+
+    function Delete(oExam) {
+
+        var result = confirm("Are you sure you want to delete?");
+        if (result) {
+            $.post("/Exams/Delete", { id: oExam.ExamId },
+                function (data) {
+                    ReloadGrid();
+                    alert(data);
+                });
+        }
+    }
+    function Reset() {
+     
+        $("#txtStudentId").val(0);
+        $("#txtStudentId").val(0);
+        $("#txtSubjectId").val(0);
+        $("#txtGrade").val("");
+        $("#txtDate").val("");
+        $("#student").val("");
+        $("#subject").val("");
+    }
+    function ReloadGrid() {
+        $('#tblExams').DataTable().clear();
+        $('#tblExams').DataTable().ajax.reload();
+    }
+
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/examsHub").build();
+
+
+    document.getElementById("btnSave").disabled = true;
+
+    connection.on("ReceiveMessage", function () {
+    
+        alert("New examiation added!");
+        ReloadGrid();
+        Reset();
+    });
+
+    connection.on("ReceiveMessageUpdate", function () {
+        ReloadGrid();
+        Reset();
+        alert("Updated!");
+    });
+
+
+    connection.on("ReceiveMessageError", function (data) {
+        alert(data);
+    });
+
+    connection.start().then(function () {
+        document.getElementById("btnSave").disabled = false;
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("btnSave").addEventListener("click", function (event) {
+
+        var id = "0";
+        var grade = $("#txtGrade").val();
+        var examDate = $("#txtDate").val();
+        var subject = $("#subject option:selected").val();
+        var student = $("#student option:selected").val();
+        connection.invoke("SendMessage",  id,  grade, examDate,  student, subject).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+</script>
