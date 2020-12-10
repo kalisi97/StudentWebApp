@@ -10,7 +10,7 @@ namespace StudentApp.Models
     public class InsertStudentViewModel
     {
 
-        [Required]
+        [Required(ErrorMessage = "Please fill out this field.")]
         [RegularExpression("^[2]{1}[0]{1}[1-2]{1}[0-9]{1}/[0-9]{4}$",
             ErrorMessage = "Please enter index number in format 20xx/xxxx for example: 2020/3701")]
         [Remote("VerifyIndexNumber","Students")]

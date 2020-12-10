@@ -2,6 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 
+
 <link href="~/css/site.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
@@ -14,42 +15,46 @@
 <br />
 <br />
 
-<form class="form-inline" id="basic-form">
+    <form id="basic-form">
+        <div class="form-row">
 
-    <div class="form-group row">
-        <input type="text" id="txtExamId" style="display:none;" />
-        <input type="text" id="txtStudentId" style="display:none;" />
-        <input type="text" id="txtSubjectId" style="display:none;" />
-        <div class="form-group mb-2">
-            <select id="student" style="height:30px" name="student">
-                @foreach (var item in ViewBag.Students)
-                {
-                    <option value="@item.IndexNumber">@item.IndexNumber</option>
-                }
-            </select>
+                <input type="text" id="txtExamId" style="display:none;" />
+                <input type="text" id="txtStudentId" style="display:none;" />
+                <input type="text" id="txtSubjectId" style="display:none;" />
+            <div class="col-xs-2">
+                <label>Student</label>
+                <select id="student" style="height:30px" name="student">
+                    <option selected></option>
+                    @foreach (var item in ViewBag.Students)
+                    {
+                        <option value="@item.IndexNumber">@item.IndexNumber</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xs-2 col-half-offset">
+                <label>Subject</label>
+                <select id="subject" style="height:30px" name="subject">
+                    <option selected></option>
+                    @foreach (var item in ViewBag.Subjects)
+                    {
+                        <option value="@item.Title">@item.Title</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xs-2 col-half-offset">
+                <label>Grade</label>
+                <input type="number" id="txtGrade" name="grade" min="5" max="10" placeholder="Grade" style="margin-right:2px;" />
+            </div>
+            <div class="col-xs-2 col-half-offset">
+                <label>Date</label>
+                <input type="datetime-local" name="date" id="txtDate" placeholder="Date" />
+            </div>
+            <div class="col-xs-2 col-half-offset">
+                <br />
+                <input id="btnSave" type="submit" value="Save Changes" class="btn btn-success" />
+            </div>   
         </div>
-        <div class="form-group mx-sm-2 mb-2">
-            <select id="subject" style="height:30px" name="subject">
-                @foreach (var item in ViewBag.Subjects)
-                {
-                    <option value="@item.Title">@item.Title</option>
-                }
-            </select>
-        </div>
-        <div class="form-group mx-sm-2 mb-2">
-            <input type="number" id="txtGrade" name="grade" min="5" max="10" placeholder="Grade" style="margin-right:2px;" />
-        </div>
-
-        <div class="form-group mx-sm-2 mb-2">
-            <input type="datetime-local" name="date" id="txtDate" placeholder="Date" />
-        </div>
-
-        <div class="form-group mx-sm-2 mb-2">
-            <input id="btnSave" type="submit" value="Save Changes" class="btn btn-success" />
-        </div>
-
-    </div>
-</form>
+    </form>
 
 <br />
 <br />
@@ -81,7 +86,9 @@
                     url: '/Exams/GetExams',
                     dataSrc: ''
                 },
-               
+                paging: true,
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
                 columns: [
                     { data: 'ExamId' },
                     { data: 'Subject' },
@@ -101,7 +108,7 @@
                 }]
             });
 
-        $.validator.addMethod("maxDate", function (value, element) {
+        $.validator.addMethod("maxDate", function (value) {
             var curDate = new Date();
             var inputDate = new Date(value);
             if (inputDate < curDate)
@@ -111,6 +118,9 @@
     });
 
     function Edit(oExam) {
+
+        var validator = $("#basic-form").validate();
+        validator.destroy();
 
         $("#txtExamId").val(oExam.ExamId);
         $("#student").val(oExam.Student);
@@ -157,7 +167,7 @@
 
     connection.on("ReceiveMessage", function () {
 
-        alert("New examiation added!");
+        alert("New examination added!");
         ReloadGrid();
         Reset();
     });
@@ -171,6 +181,7 @@
 
     connection.on("ReceiveMessageError", function (data) {
         alert(data);
+        Reset();
     });
 
     connection.start().then(function () {
@@ -191,10 +202,37 @@
                     min: 5,
                     max: 10
                 },
-                date: {
+                date:
+                {
                     required: true,
                     maxDate: true
+                },
+                student:
+                {
+                    required: true
+                },
+                subject:
+                {
+                    required: true
                 }
+            },
+            messages: {
+                grade: {
+                    required: "Required!",
+                    number: true,
+                    min: "Grade cannot be less than 5!",
+                    max: "Grade cannot be greather than 10!"
+                },
+                date: {
+                    required: "Required!"
+                },
+                student: {
+                    required: "Required!"
+                },
+                subject: {
+                    required: "Required!"
+                }
+
             }
         });
 

@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Students Page";
+}
+
+<link href="~/css/site.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+<div>
+    <p>Click here to add new student</p>
+    <a asp-action="Create" asp-controller="Students" class="btn btn-primary btn-outline-light">Add New Student</a>
+</div>
+
+<br />
+<br />
+
+<form id="basic-form" style="display:none">
+    <div class="form-row">
+        <input type="text" id="txtStudentId" placeholder="Student Id" style="display:none;" />
+
+        <div class="col-xs-2">
+            <label>First Name</label>
+            <input type="text" name="firstname" id="txtFirstName" placeholder="Name" />
+        </div>
+        <div class="col-xs-2 col-half-offset">
+            <label>Last Name</label>
+            <input type="text" name="lastname" id="txtLastName" placeholder="Student Last Name" />
+        </div>
+
+        <div class="col-xs-2 col-half-offset">
+            <label>Index No.</label>
+            <input type="text" name="indexNo" id="txtIndexNumber" placeholder="Student Index No." />
+        </div>
+
+        <div class="col-xs-2 col-half-offset">
+            <label>City</label>
+            <input type="text" name="city" id="txtCity" placeholder="Student City" />
+        </div>
+
+        <div class="col-xs-2 col-half-offset">
+            <br />
+            <input id="btnSave" type="submit" value="Save" class="btn btn-success" />
+        </div>
+    </div>
+</form>
+
+<br />
+<br />
+
+<table id="tblStudents" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Student Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Index Number</th>
+            <th>City</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table =
+            $('#tblStudents').DataTable({
+                ajax: {
+                    url: '/Students/GetStudents',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'StudentId' },
+                    { data: 'FirstName' },
+                    { data: 'LastName' },
+                    { data: 'IndexNumber' },
+                    { data: 'City' },
+                    {
+                        data: "id", render: function (data, typ, row, meta) {
+                            return "<button class='btn btn-primary' style='margin-right: 2px;' onclick='Edit(" + JSON.stringify(row) + ")'>Edit</button>" +
+                                "<button class='btn btn-danger' style='margin-right: 2px;' onclick='Delete(" + JSON.stringify(row) + ")'>Delete</button>";
+                        }
+                    }
+                ]
+            });
+
+        $.validator.addMethod("validIndexNo", function (value) {
+            var pattern = "^[2]{1}[0]{1}[1-2]{1}[0-9]{1}/[0-9]{4}$";
+            return value.match(pattern);
+        }, "Please provide format 20xx/xxxx");
+
+
+
+        $("#basic-form").submit(function (event) {
+
+            event.preventDefault();
+
+            $("#basic-form").validate({
+                rules: {
+                    firstname: {
+                        required: true
+                    },
+                    lastname: {
+                        required: true
+                    },
+                    indexNo: {
+                        required: true,
+                        validIndexNo: true
+                    },
+                    city: {
+                        required: true
+                    }
+                },
+                messages: {
+                    firstname: {
+                        required: "Required!"
+                    },
+                    lastname: {
+                        required: "Required!"
+                    },
+                    indexNo: {
+                        required: "Required!"
+                    },
+                    city: {
+                        required: "Required!"
+                    }
+                }
+            });
+
+            if ($('#basic-form').valid()) {
+
+                var student = {
+                    StudentId: $("#txtStudentId").val(),
+                    FirstName: $("#txtFirstName").val(),
+                    LastName: $("#txtLastName").val(),
+                    IndexNumber: $("#txtIndexNumber").val(),
+                    City: $("#txtCity").val()
+                };
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Students/Edit",
+                    data: JSON.stringify(student),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        Reset();
+                        ReloadGrid();
+                        alert(data);
+                    }
+                });
+            }
+
+        });
+
+    });
+
+    function Edit(oStudent) {
+
+        var validator = $("#basic-form").validate();
+        validator.destroy();
+
+        var x = document.getElementById("basic-form");
+        x.style.display = "block";
+
+        $("#txtStudentId").val(oStudent.StudentId);
+        $("#txtFirstName").val(oStudent.FirstName);
+        $("#txtLastName").val(oStudent.LastName);
+        $("#txtIndexNumber").val(oStudent.IndexNumber);
+        $("#txtCity").val(oStudent.City);
+    }
+
+
+    function Delete(oStudent) {
+
+        var result = confirm("Are you sure you want to delete student " + oStudent.FirstName + " " + oStudent.LastName + " ?");
+        if (result) {
+            $.post("/Students/Delete", { id: oStudent.StudentId },
+                function (data) {
+                    ReloadGrid();
+                    alert(data);
+                });
+        }
+    }
+    function Reset() {
+        $("#txtStudentId").val(0);
+        $("#txtFirstName").val("");
+        $("#txtLastName").val("");
+        $("#txtIndexNumber").val("");
+        $("#txtCity").val("");
+
+        var x = document.getElementById("basic-form");
+        x.style.display = "none";
+
+    }
+    function ReloadGrid() {
+        $('#tblStudents').DataTable().clear();
+        $('#tblStudents').DataTable().ajax.reload();
+    }
+</script>

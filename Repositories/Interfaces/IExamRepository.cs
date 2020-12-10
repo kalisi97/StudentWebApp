@@ -8,6 +8,6 @@ namespace StudentApp.Repositories.Interfaces
 {
     public interface IExamRepository : IRepository<Exam>
     {
-        Exam PassedExam(int subjectId, int studentId, int grade);
+        Exam PassedExam(int subjectId, int studentId);
     }
 }

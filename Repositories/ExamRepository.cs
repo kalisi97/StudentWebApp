@@ -27,10 +27,10 @@ namespace StudentApp.Repositories
                 .FirstOrDefault(e=>e.ExamId == id);
         }
 
-        public Exam PassedExam(int subjectId, int studentId, int grade)
+        public Exam PassedExam(int subjectId, int studentId)
         {
             var exam = _context.Exams.AsNoTracking().ToList().Find(s => s.SubjectId == subjectId
-            && s.StudentId == studentId && s.Grade == grade);
+            && s.StudentId == studentId && s.Grade > 5);
             return exam;
         }
 

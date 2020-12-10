@@ -91,20 +91,24 @@ namespace StudentApp.Services
 
                 //find the student on whom the changes need to be applied
 
+                var studentFromDb = _repositoryStudent.GetById(entity.StudentId);
+
                 var student = _repositoryStudent.FindByIndexNumber(entity.IndexNumber);
 
                 //check if there is no other student with this index number
 
-                if (student != null && !student.Equals(entity)) throw new Exception("Student with this index number alredy exist!");
-               
+        
+              
+                if (student != null && student.Equals(studentFromDb) ==false) throw new Exception("Student with this index number alredy exist!");
+
                 //apply changes
+
+                studentFromDb.City = entity.City;
+                studentFromDb.FirstName = entity.FirstName;
+                studentFromDb.LastName = entity.LastName;
+                studentFromDb.IndexNumber = entity.IndexNumber;
                 
-                    student.City = entity.City;
-                    student.FirstName = entity.FirstName;
-                    student.LastName = entity.LastName;
-                    student.IndexNumber = entity.IndexNumber;
-                
-                _repositoryStudent.Update(student);
+                _repositoryStudent.Update(studentFromDb);
 
                 //save changes
                 _repositoryStudent.SaveChanges();

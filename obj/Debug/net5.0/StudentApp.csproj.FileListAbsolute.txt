@@ -150,3 +150,4 @@ C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentAp
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentApp.genruntimeconfig.cache
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\StudentApp.csprojAssemblyReference.cache
 C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\Razor\Views\Exams\Index.cshtml.g.cs
+C:\Users\Katarina\Desktop\repos\StudentApp\StudentApp\obj\Debug\net5.0\Razor\Views\Students\Index.cshtml.g.cs

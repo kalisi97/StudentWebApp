@@ -16,16 +16,21 @@
 <br />
 <br />
 
-<form id="basic-form" class="form-inline">
-    <div class="form-group row">
+
+<form id="basic-form" style="display:none">
+    <div class="form-row">
         <input type="text" id="txtSubjectId" placeholder="Subject Id" style="display:none;" />
-        <div class="form-group mb-2">
-            <input type="text" id="txtTitle" name="title" placeholder="Subject Title" style="margin-right:5px;display:none;" />
+
+        <div class="col-xs-6">
+            <label>Subject Title</label>
+            <input type="text" id="txtTitle" name="title" />
         </div>
-        <div class="form-group mx-sm-2 mb-2">
-            <input id="btnSave" type="submit" value="Save" class="btn btn-success" style="margin-right:5px;display:none;" />
-       </div>
+
+        <div class="col-xs-6 col-half-offset">
+            <br />
+            <input id="btnSave" type="submit" value="Save" class="btn btn-success" />
         </div>
+    </div>
 </form>
 
 <br />
@@ -51,6 +56,9 @@
                     url: '/Subjects/GetAll',
                     dataSrc: ''
                 },
+                paging: true,
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
                 columns: [
                     { data: 'SubjectId' },
                     { data: 'Title' },
@@ -63,13 +71,18 @@
                 ]
             });
 
+
         $("#basic-form").submit(function (event) {
-            event.preventDefault();
 
             $("#basic-form").validate({
                 rules: {
                     title: {
                         required: true
+                    }
+                },
+                messages: {
+                    title: {
+                        required: "Required!"
                     }
                 }
             });
@@ -94,18 +107,22 @@
                 });
             }
 
-            });
+            event.preventDefault();
+
+        });
     });
+
 
     function Edit(oSubject) {
 
-        var x1 = document.getElementById("txtTitle");
-        x1.style.display = "inline-block";
-        var x2 = document.getElementById("btnSave");
-        x2.style.display = "inline-block";
+        var validator = $("#basic-form").validate();
+        validator.destroy();
+
+        var x = document.getElementById("basic-form");
+        x.style.display = "block";
+
         $("#txtSubjectId").val(oSubject.SubjectId);
         $("#txtTitle").val(oSubject.Title);
-
     }
 
 
@@ -125,10 +142,10 @@
 
         $("#txtSubjectId").val(0);
         $("#txtTitle").val("");
-        var x1 = document.getElementById("txtTitle");
-        x1.style.display = "none";
-        var x2 = document.getElementById("btnSave");
-        x2.style.display = "none";
+
+
+        var x = document.getElementById("basic-form");
+        x.style.display = "none";
 
     }
 

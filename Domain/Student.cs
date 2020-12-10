@@ -30,24 +30,6 @@ namespace StudentApp.Domain
 
         public virtual ICollection<Exam> Exams { get; set; }
 
-        public override bool Equals(object obj)
-        {
-          if (this == obj) return true;
-
-          if (obj is Student s)
-          {
-                if(s != null)
-                {
-                    if (s.IndexNumber == this.IndexNumber) return true;
-                }
-          }
-
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return this.IndexNumber.GetHashCode();
-        }
+       
     }
 }

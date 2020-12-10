@@ -30,8 +30,7 @@ namespace StudentApp.Controllers
         [Route("Subjects/GetAll")]
         public IEnumerable<Subject> GetAll()
         {
-            var x = _subjectService.GetAll();
-            return x;
+            return _subjectService.GetAll();
         }
 
         public ActionResult Create()
@@ -41,7 +40,7 @@ namespace StudentApp.Controllers
 
         [HttpPost]
 
-        public ActionResult Create([FromForm] SubjectViewModel subjectViewModel)
+        public ActionResult Create([FromForm] Subject subjectViewModel)
         {
             try
             {
@@ -71,7 +70,7 @@ namespace StudentApp.Controllers
             try
             {
                 _subjectService.Update(subject);
-                return Json($"Subject: {subject.Title} updated!");
+                return Json($"Subject successfully updated!");
 
             }
             catch (Exception e)
@@ -95,6 +94,20 @@ namespace StudentApp.Controllers
 
                 return Json(e.Message);
             }
+        }
+
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult VerifyTitle(string title)
+        {
+
+
+            if (_subjectService.GetByTitle(title) != null)
+            {
+                return Json($"This subject already exists!");
+            }
+
+            return Json(true);
         }
     }
 }

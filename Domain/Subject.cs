@@ -14,24 +14,5 @@ namespace StudentApp.Domain
         public string Title { get; set; }
         public virtual ICollection<Exam> Exams { get;  set; }
 
-        public override bool Equals(object obj)
-        {
-            if (this == obj) return true;
-
-            if (obj is Subject s)
-            {
-                if (s != null)
-                {
-                    if (s.Title == this.Title) return true;
-                }
-            }
-
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Title.GetHashCode();
-        }
     }
 }

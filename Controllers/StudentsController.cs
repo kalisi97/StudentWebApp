@@ -20,12 +20,20 @@ namespace StudentApp.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Student> Index()
+        public ActionResult Index()
         {
-   
+            return View();
+        }
+
+
+        [HttpGet]
+        public IEnumerable<Student> GetStudents()
+        {
+
             return _studentService.GetAll();
         }
-    
+
+
         public ActionResult Create()
         {
             return View();
@@ -64,9 +72,10 @@ namespace StudentApp.Controllers
         {
             try
             {
+              
                 _studentService.Update(student);
        
-                return Json($"Student: {student.FirstName} {student.LastName} updated!");
+                return Json($"Student successfully updated!");
             
             }
             catch(Exception e)

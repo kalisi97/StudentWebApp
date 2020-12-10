@@ -74,12 +74,12 @@ namespace StudentApp.Services
 
                 /*
                  * if the student has already passed the exam, it is necessary to cancel the grade,
-                 * in order to enter a new positive grade
+                 * in order to enter a new grade
                  */
 
                 if (PassedExam(entity) != null)
                 {
-                    throw new Exception("This student has already passed this subject! Please delete it before inserting new positive grade for this subject exam. ");
+                    throw new Exception("This student has already passed this subject! Please delete it before inserting new grade for this subject exam. ");
                 }
                 else
                 {
@@ -98,8 +98,8 @@ namespace StudentApp.Services
 
         public Exam PassedExam(Exam entity)
         {
-            Exam exam = _repositoryExam.PassedExam(entity.Subject.SubjectId, entity.Student.StudentId, entity.Grade);
-            if (exam != null && exam.Grade > 5) return exam;
+            Exam exam = _repositoryExam.PassedExam(entity.Subject.SubjectId, entity.Student.StudentId);
+            if (exam != null) return exam;
             return null;
         }
 
